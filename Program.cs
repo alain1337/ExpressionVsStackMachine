@@ -6,7 +6,7 @@ namespace ExpressionVsStackMachine
 {
     internal static class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             // 1+2*3=7
 
@@ -69,7 +69,7 @@ namespace ExpressionVsStackMachine
             var n = Expression.Variable(typeof(int), "result");
             var end = Expression.Label(typeof(int));
             block = Expression.Block(
-                new [] { result, n },
+                new[] { result, n },
                 Expression.Assign(result, Expression.Constant(1)),
                 Expression.Assign(n, Expression.Constant(10)),
                 Expression.Loop(
@@ -92,6 +92,23 @@ namespace ExpressionVsStackMachine
                         throw new Exception("Oops");
                 }
             });
+
+            int Fac()
+            {
+                var r = 1;
+                for (var i = 1; i <= 10; i++)
+                    r *= i;
+                return r;
+            }
+
+            Test("Lambda (Complex)", () =>
+            {
+                for (var i = 0; i < loops; i++)
+                {
+                    if (Fac() != fac10)
+                        throw new Exception("Oops");
+                }
+            });
         }
 
         static void Test(string caption, Action action)
@@ -99,7 +116,7 @@ namespace ExpressionVsStackMachine
             Console.Write($"{caption,-30}: ");
             var sw = Stopwatch.StartNew();
             action();
-            Console.WriteLine($"{sw.ElapsedMilliseconds} ms");
+            Console.WriteLine($"{sw.ElapsedMilliseconds + " ms",10}");
         }
     }
 }
