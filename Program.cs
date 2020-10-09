@@ -12,7 +12,7 @@ namespace ExpressionVsStackMachine
 
             const int loops = 100_000;
             var program = StackMachine.Compile(new[] { "1", "2", "3", "*", "+" });
-            Test("StackMachine", () =>
+            Test("StackMachine (Simple)", () =>
             {
                 for (var i = 0; i < loops; i++)
                     if (StackMachine.Execute(program) != 7)
@@ -27,7 +27,7 @@ namespace ExpressionVsStackMachine
                         Expression.Constant(3))));
 
             var lambda = Expression.Lambda(block).Compile();
-            Test("Expression", () =>
+            Test("Expression (Simple)", () =>
             {
                 for (var i = 0; i < loops; i++)
                     if ((int)lambda.DynamicInvoke() != 7)
@@ -58,7 +58,7 @@ namespace ExpressionVsStackMachine
                 "swap"
             });
 
-            Test("StackMachine", () =>
+            Test("StackMachine (Complex)", () =>
             {
                 for (var i = 0; i < loops; i++)
                     if (StackMachine.Execute(program) != fac10)
@@ -84,7 +84,7 @@ namespace ExpressionVsStackMachine
                     , end)
             );
             lambda = Expression.Lambda(block).Compile();
-            Test("Expression", () =>
+            Test("Expression (Complex)", () =>
             {
                 for (var i = 0; i < loops; i++)
                 {
