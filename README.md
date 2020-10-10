@@ -3,9 +3,13 @@
 Simple test to compare performance of a stack machine vs. .NET Expression trees
 
 ```
-StackMachine (Simple)         :      20 ms
-Expression (Simple)           :      47 ms
-StackMachine (Complex)        :     364 ms
-Expression (Complex)          :      50 ms
-Lambda (Complex)              :       2 ms
+Simple
+        StackMachine                  :      20 ms
+        Expression                    :      48 ms
+
+Complex
+        StackMachine                  :     322 ms
+        Expression                    :      50 ms
+        Lambda                        :       2 ms
+        Roslyn Scripting              :      36 ms
 ```
