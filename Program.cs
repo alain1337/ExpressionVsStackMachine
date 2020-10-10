@@ -28,14 +28,37 @@ namespace ExpressionVsStackMachine
                         Expression.Constant(2),
                         Expression.Constant(3))));
 
-            var lambda = Expression.Lambda(block).Compile();
+            var simpleExpression = Expression.Lambda(block).Compile();
             Test("Expression", () =>
             {
                 for (var i = 0; i < loops; i++)
-                    if ((int)lambda.DynamicInvoke() != 7)
+                    if ((int)simpleExpression.DynamicInvoke() != 7)
                         throw new Exception("Oops");
             });
 
+            int Simple()
+            {
+                return 1 + 2 * 3;
+            }
+
+            Test("Lambda", () =>
+            {
+                for (var i = 0; i < loops; i++)
+                {
+                    if (Simple() != 7)
+                        throw new Exception("Oops");
+                }
+            });
+
+            var simpleRoslyn = new Roslyn("1+2*3");
+            Test("Roslyn Scripting", () =>
+            {
+                for (var i = 0; i < loops; i++)
+                {
+                    if (simpleRoslyn.Call() != 7)
+                        throw new Exception("Oops");
+                }
+            });
             Console.WriteLine();
             Console.WriteLine("Complex");
 
@@ -88,12 +111,12 @@ namespace ExpressionVsStackMachine
                         )
                     , end)
             );
-            lambda = Expression.Lambda(block).Compile();
+            simpleExpression = Expression.Lambda(block).Compile();
             Test("Expression", () =>
             {
                 for (var i = 0; i < loops; i++)
                 {
-                    if ((int)lambda.DynamicInvoke() != fac10)
+                    if ((int)simpleExpression.DynamicInvoke() != fac10)
                         throw new Exception("Oops");
                 }
             });
