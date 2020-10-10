@@ -115,9 +115,9 @@ namespace ExpressionVsStackMachine
                     case StackOpCode.Over:
                         a = stack.Pop();
                         b = stack.Pop();
-                        stack.Push(a);
                         stack.Push(b);
                         stack.Push(a);
+                        stack.Push(b);
                         break;
                     case StackOpCode.Print:
                         Console.WriteLine(stack.Pop());
