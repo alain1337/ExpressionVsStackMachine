@@ -8,11 +8,13 @@ namespace ExpressionVsStackMachine
     {
         static void Main()
         {
+            Console.WriteLine("Simple");
+
             // 1+2*3=7
 
             const int loops = 100_000;
             var program = StackMachine.Compile(new[] { "1", "2", "3", "*", "+" });
-            Test("StackMachine (Simple)", () =>
+            Test("StackMachine", () =>
             {
                 for (var i = 0; i < loops; i++)
                     if (StackMachine.Execute(program) != 7)
@@ -27,12 +29,15 @@ namespace ExpressionVsStackMachine
                         Expression.Constant(3))));
 
             var lambda = Expression.Lambda(block).Compile();
-            Test("Expression (Simple)", () =>
+            Test("Expression", () =>
             {
                 for (var i = 0; i < loops; i++)
                     if ((int)lambda.DynamicInvoke() != 7)
                         throw new Exception("Oops");
             });
+
+            Console.WriteLine();
+            Console.WriteLine("Complex");
 
 
             // Fac(10) = 3_628_800
@@ -58,7 +63,7 @@ namespace ExpressionVsStackMachine
                 "swap"
             });
 
-            Test("StackMachine (Complex)", () =>
+            Test("StackMachine", () =>
             {
                 for (var i = 0; i < loops; i++)
                     if (StackMachine.Execute(program) != fac10)
@@ -84,7 +89,7 @@ namespace ExpressionVsStackMachine
                     , end)
             );
             lambda = Expression.Lambda(block).Compile();
-            Test("Expression (Complex)", () =>
+            Test("Expression", () =>
             {
                 for (var i = 0; i < loops; i++)
                 {
@@ -101,7 +106,7 @@ namespace ExpressionVsStackMachine
                 return r;
             }
 
-            Test("Lambda (Complex)", () =>
+            Test("Lambda", () =>
             {
                 for (var i = 0; i < loops; i++)
                 {
@@ -109,11 +114,23 @@ namespace ExpressionVsStackMachine
                         throw new Exception("Oops");
                 }
             });
+
+            var roslyn = new Roslyn("var result = 1; for (var i=1; i <= 10; i++) result*=i; return result;");
+            Test("Roslyn Scripting", () =>
+            {
+                for (var i = 0; i < loops; i++)
+                {
+                    if (roslyn.Call() != fac10)
+                        throw new Exception("Oops");
+                }
+            });
+
+            Console.WriteLine();
         }
 
         static void Test(string caption, Action action)
         {
-            Console.Write($"{caption,-30}: ");
+            Console.Write($"\t{caption,-30}: ");
             var sw = Stopwatch.StartNew();
             action();
             Console.WriteLine($"{sw.ElapsedMilliseconds + " ms",10}");
